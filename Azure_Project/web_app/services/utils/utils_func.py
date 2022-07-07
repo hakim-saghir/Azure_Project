@@ -1,7 +1,14 @@
+import html
 import logging
 import os
 from azure.storage.blob import BlobServiceClient
+from azure.cognitiveservices.vision.computervision  import ComputerVisionClient
+from msrest.authentication import CognitiveServicesCredentials
 from PIL import Image
+from web_app.services.utils.db_interactions import connect_database, execute_request
+from web_app.services.utils.sql_requests import CHECK_IF_TAG_EXIST, INSERT_NEW_TAG, INSERT_NEW_IMAGE, INSERT_LINK, \
+    GET_IMAGES_BY_TAGS, \
+    GET_IMAGE_TAGS, GET_ALL_IMAGES
 
 
 def check_if_file_is_an_image(image_fullpath: str) -> bool:
@@ -124,3 +131,121 @@ def download_blob_from_container(container_name: str, download_path: str, downlo
                       "please check your inputs")
         return False
     return True
+
+
+def check_if_tag_exist(tag: str) -> bool:
+    tag = html.escape(tag)
+    connection = connect_database()
+    if connection:
+        result_count, result = execute_request(connection, CHECK_IF_TAG_EXIST, tag)
+        connection.close()
+        if result_count:
+            return True
+        return False
+    return None
+
+
+def insert_new_tag_if_not_exist(tag: str) -> bool:
+    if check_if_tag_exist(tag):
+        return True
+    tag = html.escape(tag)
+    connection = connect_database()
+    if connection:
+        result_count, result = execute_request(connection, INSERT_NEW_TAG, tag)
+        connection.close()
+        if result_count:
+            return True
+        return False
+    return None
+
+
+def insert_link_image_tag(image_id: str, tag:str) -> bool:
+    connection = connect_database()
+    if connection:
+        result_count, result = execute_request(connection, INSERT_LINK, (image_id, tag))
+        connection.close()
+        if result_count:
+            return True
+        return False
+    return None
+
+
+def save_image_information_in_database(name, description, container, tags):
+    for tag in tags:
+        insert_new_tag_if_not_exist(tag)
+    connection = connect_database()
+    if connection:
+        url = f"https://{os.getenv('STORAGE_LINK')}.blob.core.windows.net/{container}/{name}"
+        result_count, result = execute_request(connection, INSERT_NEW_IMAGE, (name, description, container, url))
+        connection.close()
+        if result_count:
+            image_id = str(connection.insert_id())
+            for tag in tags:
+                insert_link_image_tag(image_id, tag)
+            return True
+        return False
+    return None
+
+
+def get_image_tags(image_path, end_point, key):
+    features = ['Description', 'Tags', 'Adult', 'Objects', 'Faces']
+    computer_vision_client = ComputerVisionClient(end_point, CognitiveServicesCredentials(key))
+    image_stream = open(image_path, "rb")
+    result = computer_vision_client.analyze_image_in_stream(image_stream, visual_features=features)
+    dico = {}
+    for i in result.tags:
+        dico[i.name] = i.confidence
+    return dico
+
+
+def get_image_caption(image_path, end_point, key):
+    features = ['Description']
+    computer_vision_client = ComputerVisionClient(end_point, CognitiveServicesCredentials(key))
+    image_stream = open(image_path, "rb")
+    result = computer_vision_client.analyze_image_in_stream(image_stream, visual_features=features)
+    dico = {}
+    if len(result.description.captions) == 0:
+        return {}
+    for i in result.description.captions:
+        dico[i.text] = i.confidence
+    return dico
+
+
+def get_tags_image_sql(image):
+    connection = connect_database()
+    if connection:
+        result_count, result = execute_request(connection, GET_IMAGE_TAGS, image)
+        connection.close()
+        if result_count:
+            tags = []
+            for row in result:
+                tags.append(row['tag'])
+            return tags
+        return []
+    return None
+
+
+def get_images_from_string(sentence: str):
+    tags_array = sentence.split(' ')
+    if not len(tags_array):
+        return []
+    tags_string_for_sql = tuple(tags_array)
+    s_for_sql = ', '.join(["%s" for tag in tags_array])
+    connection = connect_database()
+    if connection:
+        result_count, result = execute_request(connection, GET_IMAGES_BY_TAGS
+                                               .format(s_for_sql, s_for_sql), (tags_string_for_sql, tags_string_for_sql))
+        connection.close()
+        if result_count:
+            return result
+    return []
+
+
+def get_all_images():
+    connection = connect_database()
+    if connection:
+        result_count, result = execute_request(connection, GET_ALL_IMAGES)
+        connection.close()
+        if result_count:
+            return result
+    return []

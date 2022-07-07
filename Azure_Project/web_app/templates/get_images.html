@@ -27,6 +27,28 @@
     </style>
 </head>
 <body class="bg-image body_index">
-    {% include "navbar.html" %}
+{% include "navbar.html" %}
+    <div style="height:80%;display:block;overflow:auto;margin-left: 20px;margin-right: 20px">
+        <table class="table table-striped text-center">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Nom</th>
+                <th scope="col">Description</th>
+                <th scope="col">Tags</th>
+                <th scope="col">Date de modification</th>
+            </tr>
+            </thead>
+            <tbody style="background-color: white">
+            {% for line in data %}
+            <tr>
+                <th scope="col"><a href="{{line['url']}}">{{line["name"]}}</a></th>
+                <th scope="col">{{line["description"]}}</th>
+                <th scope="col">{{line["tags"]}}</th>
+                <th scope="col">{{line["timestamp"]}}</th>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
