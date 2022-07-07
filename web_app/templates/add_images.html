@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html"/>
+    <meta charset="utf-8"/>
+    <title>Ajout de fichier -Projet Azure</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <a href="/">Accueil</a>
+    <form method="post" action="/upload_images" enctype="multipart/form-data">
+        <label>Choississez un fichier </label>
+        <input type="file" name="files" accept="image/png, image/jpeg, image/avif, image/webp, image/bmp" multiple required>
+        <input type="submit" value="Ajout de(s) Fichier"/>
+    </form>
+    {% include "layout.html" %}
+
+</body>
+</html>

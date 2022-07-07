@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark shadow-6-strong" style="background-color: rgb(0, 0, 0, 0.5)">
+    <!-- Container wrapper -->
+    <div class="container-fluid">
+        <!-- Navbar brand -->
+        <a class="navbar-brand" href="/">Azure Project</a>
+
+        <!-- Toggle button -->
+        <button
+                class="navbar-toggler"
+                type="button"
+                data-mdb-toggle="collapse"
+                data-mdb-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+        >
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Collapsible wrapper -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!-- Left links -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link blue_lights_buttons" aria-current="page" href="/">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link blue_lights_buttons" href="/add_images">Ajouter des images</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled blue_lights_buttons" href="/get_images" tabindex="-1" aria-disabled="true">Lister les images</a>
+                </li>
+            </ul>
+            <!-- Left links -->
+            <form class="d-flex input-group w-auto opacity_7">
+                <input
+                        type="search"
+                        class="form-control"
+                        placeholder="Type query"
+                        aria-label="Search"/>
+                <button
+                        class="btn btn-outline-light"
+                        type="button"
+                        data-mdb-ripple-color="dark">
+                    Search
+                </button>
+            </form>
+        </div>
+        <!-- Collapsible wrapper -->
+    </div>
+    <!-- Container wrapper -->
+</nav>
+<!-- Navbar -->

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+{% with messages = get_flashed_messages(with_categories=true) %}
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            {% for category, message in messages %}
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">{{category}}</h4>
+            </div>
+            <div class="modal-body">
+                <p>{{message}}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% if messages %}
+<script>
+    $(document).ready(function(){
+        $("#myModal").modal()
+    });
+</script>
+{% endif %}
+
+{% endwith %}
