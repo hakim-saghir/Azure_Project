@@ -15,7 +15,7 @@ ENV DATABASE_USER=azure
 ENV DATABASE_PASSWORD=Projet-admin
 ENV STORAGE_LINK=csb10032000e07f0bc1
 ENV AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=https;AccountName=csb10032000e07f0bc1;AccountKey=505FvWV+4RieYdWii+4GoSoXeM246GNrwnWuwAqMStepKXeIgoec4E+EW1vN1x7y6uJO0dklPHhY2cJXNUobbw==;EndpointSuffix=core.windows.net
-ENV END_POINT_VISION=https://ressource-comp-vis.cognitiveservices.azure.com/
-ENV KEY_VISION=0ca6e150426242249013401d0b1ffdcb
+ENV END_POINT_VISION=https://azureprojectcomputervision.cognitiveservices.azure.com/
+ENV KEY_VISION=b55a82921ead4d62912806d40e9560ad
 ENTRYPOINT ["flask", "run"]
 EXPOSE 52800
