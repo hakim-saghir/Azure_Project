@@ -10,6 +10,11 @@ L'objectif du projet était de développer une application en utilisant Azure Co
 
 ![image](https://user-images.githubusercontent.com/73503150/178021709-f9d4e49c-0aa1-4e75-b613-fffc96dae191.png)
 
+![image](https://user-images.githubusercontent.com/73503150/178021913-378305ef-f887-4719-bf30-fe698508ecb1.png)
+
+![image](https://user-images.githubusercontent.com/73503150/178022047-82da04f4-332d-4d80-85a2-0a6933064c37.png)
+
+
 ## Installation :
 
 ### Lancement sur windows :
