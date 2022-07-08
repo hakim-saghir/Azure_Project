@@ -21,30 +21,34 @@
             opacity: 0.7;
         }
         .body_index {
-            background-image: url('https://www.numerama.com/wp-content/uploads/2016/07/espace.jpg');
+            background-image: url('https://w.wallhaven.cc/full/d5/wallhaven-d58kwl.jpg');
             height: 100vh;
         }
     </style>
 </head>
 <body class="bg-image body_index">
 {% include "navbar.html" %}
-    <div style="height:80%;display:block;overflow:auto;margin-left: 20px;margin-right: 20px">
+    <div style="height:80%;display:block;overflow:auto;margin: 20px 20px 0 20px; opacity: 0.92">
         <table class="table table-striped text-center">
-            <thead class="thead-dark">
-            <tr>
+            <thead class="thead-dark" >
+            <tr >
+                <th scope="col">ID</th>
                 <th scope="col">Nom</th>
                 <th scope="col">Description</th>
                 <th scope="col">Tags</th>
-                <th scope="col">Date de modification</th>
+                <th scope="col">Dernière date de modification</th>
+                <th scope="col"></th>
             </tr>
             </thead>
             <tbody style="background-color: white">
             {% for line in data %}
             <tr>
+                <th scope="col" style="font-weight: 900;">{{line["IDBASE"]}}</th>
                 <th scope="col"><a href="{{line['url']}}">{{line["name"]}}</a></th>
                 <th scope="col">{{line["description"]}}</th>
                 <th scope="col">{{line["tags"]}}</th>
                 <th scope="col">{{line["timestamp"]}}</th>
+                <th scope="col"><a class="btn btn-outline-danger" style="text-decoration: none" href="/delete?id={{line['IDBASE']}}">Supprimer</a></th>
             </tr>
             {% endfor %}
             </tbody>

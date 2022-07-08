@@ -1,8 +1,8 @@
 import os
-from flask import blueprints, render_template, request, flash
+from flask import blueprints, render_template, request, flash, redirect
 from web_app import loaded_images_temporary_storage_path
 from .utils.utils_func import get_image_tags, upload_image, save_image_information_in_database, \
-    get_image_caption, get_all_images, get_images_from_string, get_tags_image_sql
+    get_image_caption, get_all_images, get_images_from_string, get_tags_image_sql, delete_image_and_its_tags
 
 routes = blueprints.Blueprint("routes", "routes")
 
@@ -82,3 +82,12 @@ def get_images_by_searching():
         tags = ", ".join(tags)
         data[index]['tags'] = tags
     return render_template('get_images.html', data=data)
+
+
+@routes.route('/delete', methods=['GET'])
+def delete_image_by_id():
+    if "id" not in request.args.keys() or request.args["id"] == "":
+        return render_template('get_images.html')
+    delete_image_and_its_tags(request.args["id"])
+    # flash(f"L'image avec {request.args['id']} a été supprimée de la base de données et de son contenair", "Terminé")
+    return redirect("/get_images")

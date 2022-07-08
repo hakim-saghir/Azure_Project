@@ -5,10 +5,8 @@ from azure.storage.blob import BlobServiceClient
 from azure.cognitiveservices.vision.computervision  import ComputerVisionClient
 from msrest.authentication import CognitiveServicesCredentials
 from PIL import Image
-from web_app.services.utils.db_interactions import connect_database, execute_request
-from web_app.services.utils.sql_requests import CHECK_IF_TAG_EXIST, INSERT_NEW_TAG, INSERT_NEW_IMAGE, INSERT_LINK, \
-    GET_IMAGES_BY_TAGS, \
-    GET_IMAGE_TAGS, GET_ALL_IMAGES
+from .db_interactions import connect_database, execute_request
+from .sql_requests import *
 
 
 def check_if_file_is_an_image(image_fullpath: str) -> bool:
@@ -170,7 +168,7 @@ def insert_link_image_tag(image_id: str, tag:str) -> bool:
     return None
 
 
-def save_image_information_in_database(name, description, container, tags):
+def save_image_information_in_database(name, description, container, tags) -> bool:
     for tag in tags:
         insert_new_tag_if_not_exist(tag)
     connection = connect_database()
@@ -187,7 +185,7 @@ def save_image_information_in_database(name, description, container, tags):
     return None
 
 
-def get_image_tags(image_path, end_point, key):
+def get_image_tags(image_path, end_point, key) -> dict:
     features = ['Description', 'Tags', 'Adult', 'Objects', 'Faces']
     computer_vision_client = ComputerVisionClient(end_point, CognitiveServicesCredentials(key))
     image_stream = open(image_path, "rb")
@@ -198,7 +196,7 @@ def get_image_tags(image_path, end_point, key):
     return dico
 
 
-def get_image_caption(image_path, end_point, key):
+def get_image_caption(image_path, end_point, key) -> dict:
     features = ['Description']
     computer_vision_client = ComputerVisionClient(end_point, CognitiveServicesCredentials(key))
     image_stream = open(image_path, "rb")
@@ -211,7 +209,7 @@ def get_image_caption(image_path, end_point, key):
     return dico
 
 
-def get_tags_image_sql(image):
+def get_tags_image_sql(image) -> list:
     connection = connect_database()
     if connection:
         result_count, result = execute_request(connection, GET_IMAGE_TAGS, image)
@@ -225,23 +223,24 @@ def get_tags_image_sql(image):
     return None
 
 
-def get_images_from_string(sentence: str):
+def get_images_from_string(sentence: str) -> list:
     tags_array = sentence.split(' ')
     if not len(tags_array):
         return []
     tags_string_for_sql = tuple(tags_array)
     s_for_sql = ', '.join(["%s" for tag in tags_array])
+    tags_string_for_sql = tuple(tags_array)
     connection = connect_database()
     if connection:
         result_count, result = execute_request(connection, GET_IMAGES_BY_TAGS
-                                               .format(s_for_sql, s_for_sql), (tags_string_for_sql, tags_string_for_sql))
+                                               .format(s_for_sql, s_for_sql), tags_string_for_sql + tags_string_for_sql)
         connection.close()
         if result_count:
             return result
     return []
 
 
-def get_all_images():
+def get_all_images() -> list:
     connection = connect_database()
     if connection:
         result_count, result = execute_request(connection, GET_ALL_IMAGES)
@@ -249,3 +248,20 @@ def get_all_images():
         if result_count:
             return result
     return []
+
+
+def delete_image_and_its_tags(image_IDBASE: str) -> bool:
+    connection = connect_database()
+    if connection:
+        result_count, result = execute_request(connection, GET_IMAGE_BY_IDBASE, image_IDBASE)
+        if result_count:
+            # Delete image from container
+            delete_uploaded_image(container_name=result[0]["container_name"], images_name=[result[0]["name"]])
+            # Delete image from database
+            execute_request(connection, DELETE_IMAGE, image_IDBASE)
+            # Delete image tags link
+            execute_request(connection, DELETE_LINK_IMAGE_TAGS, image_IDBASE)
+            connection.close()
+            return True
+        connection.close()
+    return False

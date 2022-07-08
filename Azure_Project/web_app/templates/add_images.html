@@ -1,20 +1,304 @@
-<!DOCTYPE html>
 <html>
 <head>
-    <meta content="text/html"/>
-    <meta charset="utf-8"/>
-    <title>Ajout de fichier -Projet Azure</title>
+    <meta charset="utf-8">
+    <title>Chargement d'images</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
 </head>
-<body>
-    <a href="/">Accueil</a>
-    <form method="post" action="/upload_images" enctype="multipart/form-data">
-        <label>Choississez un fichier </label>
-        <input type="file" name="files" accept="image/png, image/jpeg, image/avif, image/webp, image/bmp" multiple required>
-        <input type="submit" value="Ajout de(s) Fichier"/>
-    </form>
-    {% include "layout.html" %}
+
+<style>
+    body {
+        background-image: url("https://w.wallhaven.cc/full/d5/wallhaven-d58kwl.jpg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+    }
+    * {
+        padding: 0;
+        margin: 0;
+        color: #1a1f36;
+        box-sizing: border-box;
+        word-wrap: break-word;
+        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+        Helvetica Neue, Ubuntu, sans-serif;
+    }
+    body {
+        min-height: 100%;
+    }
+    h1 {
+        letter-spacing: -1px;
+    }
+    a {
+        color: #226784;
+        text-decoration: unset;
+    }
+    .login-root {
+        display: flex;
+        width: 100%;
+        min-height: 100vh;
+        overflow: hidden;
+    }
+    .loginbackground {
+        min-height: 692px;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: 0;
+        z-index: 0;
+        overflow: hidden;
+    }
+    .flex-flex {
+        display: flex;
+    }
+    .align-center {
+        align-items: center;
+    }
+    .center-center {
+        align-items: center;
+        justify-content: center;
+    }
+    .box-root {
+        box-sizing: border-box;
+    }
+    .flex-direction--column {
+        -ms-flex-direction: column;
+        flex-direction: column;
+    }
+    .box-divider--light-all-2 {
+        box-shadow: inset 0 0 0 2px #e3e8ee;
+    }
+    .box-background--blue {
+        background-color: #4a5f63;
+    }
+    /*.box-background--white {*/
+    /*    background-color: #ffffff;*/
+    /*}*/
+    .box-background--blue800 {
+        background-color: #212d63;
+    }
+    .box-background--gray100 {
+        background-color: #e3e8ee;
+    }
+    .box-background--cyan200 {
+        background-color: #7fd3ed;
+    }
+    .padding-top--64 {
+        padding-top: 64px;
+    }
+    .padding-top--24 {
+        padding-top: 24px;
+    }
+    .padding-top--48 {
+        padding-top: 48px;
+    }
+    .padding-bottom--24 {
+        padding-bottom: 24px;
+    }
+    .padding-horizontal--48 {
+        padding: 48px;
+    }
+    .padding-bottom--15 {
+        padding-bottom: 15px;
+    }
+
+    .flex-justifyContent--center {
+        -ms-flex-pack: center;
+        justify-content: center;
+    }
+
+    .formbg {
+        margin: 0px auto;
+        width: 100%;
+        max-width: 448px;
+        background: white;
+        border-radius: 4px;
+        box-shadow: rgba(60, 66, 87, 0.12) 0px 7px 14px 0px,
+        rgba(0, 0, 0, 0.12) 0px 3px 6px 0px;
+    }
+    span {
+        display: block;
+        font-size: 20px;
+        line-height: 28px;
+        color: #1a1f36;
+    }
+    label {
+        margin-bottom: 10px;
+    }
+    .reset-pass a,
+    label {
+        font-size: 14px;
+        font-weight: 600;
+        display: block;
+    }
+    .reset-pass > a {
+        text-align: right;
+        margin-bottom: 10px;
+    }
+    .grid--50-50 {
+        display: grid;
+        grid-template-columns: 50% 50%;
+        align-items: center;
+    }
+
+    .field input {
+        font-size: 16px;
+        line-height: 28px;
+        padding: 8px 16px;
+        width: 100%;
+        min-height: 44px;
+        border: unset;
+        border-radius: 4px;
+        outline-color: rgb(34, 103, 132);
+        background-color: rgb(255, 255, 255);
+        box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+        rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(60, 66, 87, 0.16) 0px 0px 0px 1px,
+        rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+        rgba(0, 0, 0, 0) 0px 0px 0px 0px;
+    }
+
+    input[type="submit"] {
+        background-color: rgb(34, 103, 132);
+        box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+        rgba(0, 0, 0, 0.12) 0px 1px 1px 0px, rgb(34, 103, 132) 0px 0px 0px 1px,
+        rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+        rgba(60, 66, 87, 0.08) 0px 2px 5px 0px;
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    .field-checkbox input {
+        width: 20px;
+        height: 15px;
+        margin-right: 5px;
+        box-shadow: unset;
+        min-height: unset;
+    }
+    .field-checkbox label {
+        display: flex;
+        align-items: center;
+        margin: 0;
+    }
+    a.ssolink {
+        display: block;
+        text-align: center;
+        font-weight: 600;
+    }
+    .footer-link span {
+        font-size: 14px;
+        text-align: center;
+    }
+    .listing a {
+        color: #697386;
+        font-weight: 600;
+        margin: 0 10px;
+    }
+
+    .animationRightLeft {
+        animation: animationRightLeft 2s ease-in-out infinite;
+    }
+    .animationLeftRight {
+        animation: animationLeftRight 2s ease-in-out infinite;
+    }
+    .tans3s {
+        animation: animationLeftRight 3s ease-in-out infinite;
+    }
+    .tans4s {
+        animation: animationLeftRight 4s ease-in-out infinite;
+    }
+
+    @keyframes animationLeftRight {
+        0% {
+            transform: translateX(0px);
+        }
+        50% {
+            transform: translateX(1000px);
+        }
+        100% {
+            transform: translateX(0px);
+        }
+    }
+
+    @keyframes animationRightLeft {
+        0% {
+            transform: translateX(0px);
+        }
+        50% {
+            transform: translateX(-1000px);
+        }
+        100% {
+            transform: translateX(0px);
+        }
+    }
+</style>
+
+<body class="body_index">
+<div class="login-root">
+    <div class="box-root flex-flex flex-direction--column" style="min-height: 100vh;flex-grow: 1;">
+        <div class="loginbackground box-background--white padding-top--64">
+            <div class="loginbackground-gridContainer">
+                <div class="box-root flex-flex" style="grid-area: top / start / 8 / end;">
+                    <div class="box-root" style="background-image: linear-gradient(white 0%, rgb(247, 250, 252) 33%); flex-grow: 1;">
+                    </div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 4 / 2 / auto / 5;">
+                    <div class="box-root box-divider--light-all-2 animationLeftRight tans3s" style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 6 / start / auto / 2;">
+                    <div class="box-root box-background--blue800" style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 7 / start / auto / 4;">
+                    <div class="box-root box-background--blue animationLeftRight" style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 8 / 4 / auto / 6;">
+                    <div class="box-root box-background--gray100 animationLeftRight tans3s" style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 2 / 15 / auto / end;">
+                    <div class="box-root box-background--cyan200 animationRightLeft tans4s" style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 3 / 14 / auto / end;">
+                    <div class="box-root box-background--blue animationRightLeft" style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 4 / 17 / auto / 20;">
+                    <div class="box-root box-background--gray100 animationRightLeft tans4s" style="flex-grow: 1;"></div>
+                </div>
+                <div class="box-root flex-flex" style="grid-area: 5 / 14 / auto / 17;">
+                    <div class="box-root box-divider--light-all-2 animationRightLeft tans3s" style="flex-grow: 1;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="box-root padding-top--24 flex-flex flex-direction--column" style="flex-grow: 1; z-index: 9;">
+
+            <div class="formbg-outer">
+                <div class="formbg">
+                    <div class="formbg-inner padding-horizontal--48" style="padding-top: 0">
+                        <div class="box-root flex-flex flex-justifyContent--center">
+                            <h1><a style="font-weight: 1000; text-decoration: none" href="/" rel="dofollow">Azure Project</a></h1>
+                        </div>
+                        <span class="padding-bottom--15">Chargement d'images</span>
+                        <form id="stripe-login" method="post" action="/upload_images" enctype="multipart/form-data">
+                            <div class="field padding-bottom--24">
+                                <label>Choisissez les images à charger</label>
+                                <input type="file" name="files" accept="image/png, image/jpeg, image/avif, image/webp, image/bmp" multiple required>
+                            </div>
+                            <div class="field padding-bottom--24">
+                                <input type="submit" name="submit" value="Charger">
+                            </div>
+                            <div class="field">
+                                <a style="text-decoration: none" class="ssolink btn" href="/"><ion-icon style="color: #226784" name="arrow-back-outline"></ion-icon>   Accueil</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include "layout.html" %}
 </body>
+
 </html>
